@@ -40,7 +40,7 @@ class GittyLeak():
         self.delete = None
         self.matched_items = []
         self.verbose = None
-        self.no_fancy_color = None
+        self.fancy_color = None
         self.BANNER_WIDTH = 80
 
         if kwargs is not None:
@@ -161,7 +161,7 @@ class GittyLeak():
         for k, v in self.matched_items.items():
             for appear in set([x[0] for x in v]):
                 # 32 is green, 31 is red
-                if not self.no_fancy_color:
+                if self.fancy_color:
                     fname = colorize(k[0], '36')
                     appear = appear.replace(k[1], colorize(k[1], '33'))
                     appear = appear.replace(k[2], colorize(k[2], '31'))
@@ -226,7 +226,7 @@ def get_args_parser():
                    help='If flag given, print verbose matches.')
     p.add_argument('--no-banner', '-b', action='store_true',
                    help='Omit the banner at the start of a print statement')
-    p.add_argument('--no-fancy-color', '-f', action='store_true',
+    p.add_argument('--no-fancy-color', '-f', action='store_false', dest="fancy_color",
                    help='Do not colorize output')
     return p
 

@@ -226,37 +226,53 @@ def colorize(val, code):
 def get_args_parser():
     p = argparse.ArgumentParser(
         description='Discover where your sensitive data has been leaked.')
-    p.add_argument('-user', '-u',
+
+    p.add_argument('-u', '-user',
                    help='Provide a github username, only if also -repo')
-    p.add_argument('-repo', '-r',
+
+    p.add_argument('-r', '-repo',
                    help='Provide a github repo, only if also -user')
-    p.add_argument('-link', '-l',
+
+    p.add_argument('-l', '-link',
                    help='Provide a link to clone')
-    p.add_argument('-delete', '-d', action='store_true',
+
+    p.add_argument('-d', '-delete', action='store_true',
                    help='If cloned, remove the repo afterwards.')
-    p.add_argument('--find-anything', '-a', action='store_true',
+
+    p.add_argument('-a', '--find-anything', action='store_true',
                    help='flag: If you want to find anything remotely suspicious.')
-    p.add_argument('--search-only-head', '-o', action='store_true',
+
+    p.add_argument('-o', '--search-only-head', action='store_true',
                    help='If flag given, only search HEAD not all commit history.')
-    p.add_argument('--case-sensitive', '-c', action='store_true',
+
+    p.add_argument('-c', '--case-sensitive', action='store_true',
                    help='flag: If you want to be specific about case matching.')
-    p.add_argument('--excluding', '-e', nargs='+',
+
+    p.add_argument('-e', '--excluding', nargs='+',
                    help='List of words that are ignored occurring as value.')
-    p.add_argument('--add-keys', '-k', nargs='+',
+
+    p.add_argument('-k', '--add-keys', nargs='+',
                    help='List of words that are added as keys.')
-    p.add_argument('--ignore-keys', '-i', nargs='+',
+
+    p.add_argument('-i', '--ignore-keys', nargs='+',
                    help='List of words that are ignored occurring as  default key. Use \'*\' for all.')
-    p.add_argument('--list-keys', '-L', action='store_true',
+
+    p.add_argument('-L', '--list-keys', action='store_true',
                    help='Display search keys, then exit')
-    p.add_argument('--no-key-prefix', '-p', action='store_false', dest='key_prefix',
+
+    p.add_argument('-p', '--no-key-prefix', action='store_false', dest='key_prefix',
                    help='Don\'t limit keywords to start of line or prefixing with one of [ ._-]')
-    p.add_argument('--line-numbers', '-n', action='store_true',
+
+    p.add_argument('-n', '--line-numbers', action='store_true',
                    help='Show line numbers in matching files')
-    p.add_argument('--verbose', '-v', action='store_true',
+
+    p.add_argument('-v', '--verbose', action='store_true',
                    help='If flag given, print verbose matches.')
-    p.add_argument('--no-banner', '-b', action='store_true',
+
+    p.add_argument('-b', '--no-banner', action='store_true',
                    help='Omit the banner at the start of a print statement')
-    p.add_argument('--no-fancy-color', '-f', action='store_false', dest="fancy_color",
+
+    p.add_argument('-f', '--no-fancy-color', action='store_false', dest="fancy_color",
                    help='Do not colorize output')
     return p
 

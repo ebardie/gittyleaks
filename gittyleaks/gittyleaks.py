@@ -25,6 +25,9 @@ class GittyLeak():
         self.min_value_length = 4
 
         self.excluding = None
+        self.add_keys = None
+        self.ignore_keys = None
+        self.list_keys = False
         self.key_prefix = True
         self.revision_list = []
         self.search_only_head = False
@@ -57,6 +60,15 @@ class GittyLeak():
 
         if self.excluding is not None:
             self.excluded_value_chars.extend(self.excluding)
+
+        if self.ignore_keys is not None:
+            if self.ignore_keys == ["*"]:
+                self.keywords = []
+            else:
+                self.keywords = list(filter(lambda key : key not in self.ignore_keys, self.keywords))
+
+        if self.add_keys is not None:
+            self.keywords += self.add_keys
 
         if not self.case_sensitive:
             self.excluded_value_chars = [x.lower() for x in self.excluded_value_chars]
@@ -224,6 +236,12 @@ def get_args_parser():
                    help='flag: If you want to be specific about case matching.')
     p.add_argument('--excluding', '-e', nargs='+',
                    help='List of words that are ignored occurring as value.')
+    p.add_argument('--add-keys', '-k', nargs='+',
+                   help='List of words that are added as keys.')
+    p.add_argument('--ignore-keys', '-i', nargs='+',
+                   help='List of words that are ignored occurring as  default key. Use \'*\' for all.')
+    p.add_argument('--list-keys', '-L', action='store_true',
+                   help='Display search keys, then exit')
     p.add_argument('--no-key-prefix', '-p', action='store_false', dest='key_prefix',
                    help='Don\'t limit keywords to start of line or prefixing with one of [ ._-]')
     p.add_argument('--verbose', '-v', action='store_true',
@@ -239,6 +257,11 @@ def main():
     """ This is the function that is run from commandline with `gittyleaks` """
     args = get_args_parser().parse_args()
     gl = GittyLeak(args.__dict__)
+
+    if gl.list_keys:
+        print(f"keys : {gl.keywords}")
+        return
+
     try:
         gl.run()
     except KeyboardInterrupt:

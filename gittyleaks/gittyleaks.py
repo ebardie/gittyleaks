@@ -17,9 +17,6 @@ class GittyLeak():
 
         self.revision_file_regex = '([a-z0-9]{40}):([^:]+):'
 
-        assignment = "(\\b|[ ._-])({})[ '\"]*(=|:)[ '\"]*([^'\" ]+)"
-        self.assignment_pattern = assignment.format('|'.join(self.keywords))
-
         self.excluded_value_chars = [
             '.', '[', 'none', 'true', 'false', 'null',
             'default', 'example', 'username', 'email', 'password'
@@ -28,6 +25,7 @@ class GittyLeak():
         self.min_value_length = 4
 
         self.excluding = None
+        self.key_prefix = True
         self.revision_list = []
         self.search_only_head = False
         self.user = None
@@ -45,6 +43,10 @@ class GittyLeak():
 
         if kwargs is not None:
             self.apply_init_args(kwargs)
+
+        prefix_pattern = "\\b|[ ._-]" if self.key_prefix else ".*"
+
+        self.assignment_pattern = f"({prefix_pattern})({'|'.join(self.keywords)})[ '\"]*(=|:)[ '\"]*([^'\" ]+)"
 
     def apply_init_args(self, kwargs):
         for k, v in kwargs.items():
@@ -222,6 +224,8 @@ def get_args_parser():
                    help='flag: If you want to be specific about case matching.')
     p.add_argument('--excluding', '-e', nargs='+',
                    help='List of words that are ignored occurring as value.')
+    p.add_argument('--no-key-prefix', '-p', action='store_false', dest='key_prefix',
+                   help='Don\'t limit keywords to start of line or prefixing with one of [ ._-]')
     p.add_argument('--verbose', '-v', action='store_true',
                    help='If flag given, print verbose matches.')
     p.add_argument('--no-banner', '-b', action='store_true',

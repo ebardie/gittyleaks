@@ -29,6 +29,7 @@ class GittyLeak():
         self.ignore_keys = None
         self.list_keys = False
         self.key_prefix = True
+        self.line_numbers = False
         self.revision_list = []
         self.search_only_head = False
         self.user = None
@@ -104,7 +105,12 @@ class GittyLeak():
 
     def get_git_matches(self, revision):
         try:
-            return str(git('grep', '-i', '-e', '"({})"'.format(r'\|'.join(self.keywords)),
+            flags = "-i"
+
+            if self.line_numbers:
+                flags += "n"
+
+            return str(git('grep', flags, '-e', '"({})"'.format(r'\|'.join(self.keywords)),
                            revision, _tty_out=False))
         # return subprocess.check_output('git grep -i -e
         # "(api\\|key\\|username\\|user\\|pw\\|password\\|pass\\|email\\|mail)" --
@@ -244,6 +250,8 @@ def get_args_parser():
                    help='Display search keys, then exit')
     p.add_argument('--no-key-prefix', '-p', action='store_false', dest='key_prefix',
                    help='Don\'t limit keywords to start of line or prefixing with one of [ ._-]')
+    p.add_argument('--line-numbers', '-n', action='store_true',
+                   help='Show line numbers in matching files')
     p.add_argument('--verbose', '-v', action='store_true',
                    help='If flag given, print verbose matches.')
     p.add_argument('--no-banner', '-b', action='store_true',
